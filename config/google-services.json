@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "568387733286",
+    "project_id": "appterrenoexpo",
+    "storage_bucket": "appterrenoexpo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568387733286:android:babc21001674bbf5c763e7",
+        "android_client_info": {
+          "package_name": "com.android.Appterreno"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-w84nnrmF_A1NqNeKNxKgUGlRIGM_q6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

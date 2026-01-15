@@ -1,0 +1,65 @@
+{
+  "expo": {
+    "name": "mobile",
+    "slug": "mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "mobile",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ios.Appterreno",
+      "googleServicesFile": "./config/GoogleService-Info.plist",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Esta app necesita acceder a tu ubicación mientras la usas.",
+        "NSLocationAlwaysUsageDescription": "Esta app necesita acceder a tu ubicación incluso en segundo plano.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Esta app necesita acceder a tu ubicación siempre, incluso en segundo plano."
+      }
+    },
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.android.Appterreno",
+      "googleServicesFile": "./config/google-services.json",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "plugins": [
+      "@react-native-firebase/app",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Esta app necesita acceso a la ubicación para funcionar correctamente.",
+          "isIosBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": true
+        }
+      ],
+      "expo-font",
+      "expo-maps",
+      "expo-router",
+      "expo-web-browser"
+    ],
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
