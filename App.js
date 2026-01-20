@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, StyleSheet, TouchableOpacity, Text, Dimensions, ActivityIndicator } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, Dimensions, ActivityIndicator, Platform, StatusBar, Alert } from "react-native";
 import MapView, { Marker, Callout, Polyline } from "react-native-maps";
 import * as Location from "expo-location";
 import ClienteForm from "./components/ClienteForm";
@@ -7,13 +7,17 @@ import PlanificadorRecorrido from "./components/PlanificadorRecorrido";
 import HistorialRecorridos from "./components/HistorialRecorridos";
 import SearchBar from "./components/SearchBarSimple";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { db } from "./firebaseConfig";
+import { db, auth } from "./firebaseConfig";
 import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, updateDoc, doc } from "firebase/firestore";
+import { signOut } from "firebase/auth";
+import { stopLocationTracking } from "./services/locationService";
+import { useAuth } from "./contexts/AuthContext";
 
 // Colores predefinidos para los marcadores de clientes
 const colores = ["#007bff", "#28a745", "#ffc107", "#dc3545", "#6f42c1", "#fd7e14"];
 
 export default function App() {
+  const { user } = useAuth();
   const [ubicacionSeleccionada, setUbicacionSeleccionada] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [clientes, setClientes] = useState([]);
@@ -172,6 +176,29 @@ export default function App() {
 
   const cerrarPlanificador = () => {
     setMostrarPlanificador(false);
+  };
+
+  const handleLogout = async () => {
+    Alert.alert(
+      'Cerrar sesión',
+      '¿Estás seguro que deseas cerrar sesión?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Sí, cerrar sesión',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await stopLocationTracking();
+              await signOut(auth);
+            } catch (error) {
+              console.error('Error al cerrar sesión:', error);
+              Alert.alert('Error', 'No se pudo cerrar sesión');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleIniciarRecorrido = async (recorrido) => {
@@ -430,7 +457,8 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#064083' }} edges={['top']}>
+      <StatusBar barStyle="light-content" backgroundColor="#064083" />
       <View style={{ flex: 1 }}>
         {/* Header superior */}
         <View style={styles.header}>
@@ -470,6 +498,10 @@ export default function App() {
             <View style={styles.menuDivider} />
             <TouchableOpacity style={styles.menuItem} onPress={verRecorrido}>
               <Text style={styles.menuItemText}>📍 Ver recorrido</Text>
+            </TouchableOpacity>
+            <View style={styles.menuDivider} />
+            <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+              <Text style={[styles.menuItemText, { color: '#dc3545' }]}>🚪 Cerrar sesión</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -636,6 +668,12 @@ export default function App() {
             />
           </View>
         )}
+
+        {/* Indicador de tracking activo */}
+        <View style={styles.trackingIndicator}>
+          <View style={styles.trackingDot} />
+          <Text style={styles.trackingText}>📍 Ubicación en tiempo real</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -650,7 +688,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#064083',
     paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingVertical: Platform.OS === 'ios' ? 4 : 8,
     elevation: 4,
     shadowColor: '#000',
     shadowOpacity: 0.2,
@@ -713,7 +751,7 @@ const styles = StyleSheet.create({
   },
   menuDropdown: {
     position: 'absolute',
-    top: 60,
+    top: Platform.OS === 'ios' ? 54 : 60,
     left: 10,
     backgroundColor: '#fff',
     borderRadius: 10,
@@ -878,5 +916,34 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 3,
+  },
+  trackingIndicator: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 70 : 80,
+    right: 10,
+    backgroundColor: 'rgba(76, 175, 80, 0.95)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    zIndex: 100,
+  },
+  trackingDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#fff',
+    marginRight: 6,
+  },
+  trackingText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: '600',
   },
 });

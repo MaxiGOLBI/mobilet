@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Keyboard, TouchableWithoutFeedback, ActivityIndicator } from 'react-native';
-import { auth } from '../firebaseInit';
+import { auth } from '../../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 
-export default function LoginScreen({ onSwitch, userImage }) {
+export default function LoginScreen({ userImage }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -62,14 +62,7 @@ export default function LoginScreen({ onSwitch, userImage }) {
           errorMessage = 'Esta cuenta ha sido deshabilitada. Por favor, contacta al soporte';
           break;
         case 'auth/user-not-found':
-          errorMessage = 'No existe una cuenta con este correo. ¿Deseas registrarte?';
-          // Sugerir registro
-          setTimeout(() => {
-            setError('Redirigiendo a la pantalla de registro...');
-            setTimeout(() => {
-              onSwitch();
-            }, 1000);
-          }, 1500);
+          errorMessage = 'No existe una cuenta con este correo. Contacta al administrador para obtener acceso';
           break;
         case 'auth/wrong-password':
           errorMessage = 'La contraseña es incorrecta. Por favor verifica e intenta nuevamente';
@@ -88,13 +81,6 @@ export default function LoginScreen({ onSwitch, userImage }) {
       }
       
       setError(errorMessage);
-
-      // Si el usuario no existe, ofrecer la opción de registro después de un breve delay
-      if (error.code === 'auth/user-not-found') {
-        setTimeout(() => {
-          onSwitch();
-        }, 2000);
-      }
     } finally {
       setLoading(false);
     }

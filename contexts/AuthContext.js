@@ -1,8 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { auth } from '../firebaseInit';
+import { auth } from '../firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { stopLocationTracking } from '../services/locationService';
+import { startLocationTracking, stopLocationTracking } from '../services/locationService';
 
 const AuthContext = createContext({});
 
@@ -18,19 +18,26 @@ export const AuthProvider = ({ children }) => {
       if (!mounted) return;
 
       if (user) {
-        // Usuario autenticado - solo guardar información esencial
+        // Usuario autenticado - guardar información y comenzar tracking
         const essentialUserData = {
           uid: user.uid,
           email: user.email,
         };
         setUser(essentialUserData);
         await AsyncStorage.setItem('user', JSON.stringify(essentialUserData));
+        
+        // Iniciar seguimiento de ubicación en tiempo real
+        try {
+          await startLocationTracking();
+          console.log('✅ Seguimiento de ubicación iniciado automáticamente');
+        } catch (error) {
+          console.error('Error al iniciar seguimiento de ubicación:', error);
+        }
       } else {
-        // Usuario no autenticado - detener tracking automáticamente
+        // Usuario no autenticado - detener tracking y limpiar datos
         setUser(null);
         await AsyncStorage.removeItem('user');
-        // Detener el tracking de ubicación cuando el usuario se desautentica
-        stopLocationTracking();
+        await stopLocationTracking();
         console.log('Usuario cerró sesión - tracking detenido automáticamente.');
       }
       setLoading(false);

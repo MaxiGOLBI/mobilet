@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
-import { auth } from '../firebaseInit';
+import { auth } from '../../firebaseConfig';
 import { signOut } from 'firebase/auth';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { startLocationTracking, stopLocationTracking } from '../services/locationService';
-import LocationTrackingNotice from '../components/LocationTrackingNotice';
+import { startLocationTracking, stopLocationTracking } from '../../services/locationService';
+import LocationTrackingNotice from '../../components/LocationTrackingNotice';
 
 const { width } = Dimensions.get('window');
 

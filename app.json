@@ -12,10 +12,12 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.ios.Appterreno",
       "googleServicesFile": "./config/GoogleService-Info.plist",
+      "statusBarStyle": "light",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Esta app necesita acceder a tu ubicación mientras la usas.",
         "NSLocationAlwaysUsageDescription": "Esta app necesita acceder a tu ubicación incluso en segundo plano.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Esta app necesita acceder a tu ubicación siempre, incluso en segundo plano."
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Esta app necesita acceder a tu ubicación siempre, incluso en segundo plano.",
+        "UIViewControllerBasedStatusBarAppearance": false
       }
     },
     "splash": {

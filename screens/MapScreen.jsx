@@ -5,6 +5,7 @@ import MapView, { Marker } from "react-native-maps"; // Mapa y marcador
 import * as Location from "expo-location"; // Permisos y ubicación actual
 import SearchBar from "../components/SearchBar";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const MapScreen = () => {
   // Coordenadas crudas del usuario (no usadas para render directamente)
@@ -68,14 +69,14 @@ const MapScreen = () => {
   if (loading) {
     // Mientras se obtiene la ubicación, mostrar spinner
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
         <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       {/* Barra de búsqueda de direcciones */}
       <SearchBar onPlaceSelected={handlePlaceSelected} />
 
@@ -102,7 +103,7 @@ const MapScreen = () => {
           )}
         </MapView>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
